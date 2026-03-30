@@ -14,12 +14,6 @@ const modalCloseButton = document.getElementById('modalClose');
 const API_KEY = 'cQIbgD9qm3yQqojnn2skKowrbbgnp1FdB86zqeB5';
 const APOD_URL = 'https://api.nasa.gov/planetary/apod';
 
-// Optional manual thumbnail overrides for known video entries
-const VIDEO_THUMBNAIL_OVERRIDES = {
-	'2026-03-24|A Gravity Map of Earth': 'img/video-thumb-gravity-map-earth.png',
-	'2026-03-22|Leaving Earth': 'img/video-thumb-leaving-earth.png'
-};
-
 // Call the setupDateInputs function from dateRange.js
 // This sets up the date pickers to:
 // - Default to a range of 9 days (from 9 days ago to today)
@@ -54,11 +48,6 @@ function getYouTubeVideoId(videoUrl) {
 }
 
 function getVideoPreviewUrl(item) {
-	const overrideKey = `${item.date}|${item.title}`;
-	if (VIDEO_THUMBNAIL_OVERRIDES[overrideKey]) {
-		return VIDEO_THUMBNAIL_OVERRIDES[overrideKey];
-	}
-
 	if (item.thumbnail_url) {
 		return item.thumbnail_url;
 	}
@@ -79,7 +68,9 @@ function createCard(item) {
 	const typeLabel = isVideo ? 'VIDEO' : 'IMAGE';
 	const mediaMarkup = previewUrl
 		? `<img src="${previewUrl}" alt="${item.title}" loading="lazy" />`
-		: `<div class="video-thumbnail-fallback">🎬 Video Preview</div>`;
+		: `<video class="gallery-video-preview" muted loop autoplay playsinline preload="metadata" aria-label="${item.title}">
+			<source src="${item.url}" type="video/mp4" />
+		</video>`;
 
 	card.innerHTML = `
 		<div class="gallery-media">
